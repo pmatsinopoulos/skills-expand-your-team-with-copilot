@@ -51,6 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
     weekend: { days: ["Saturday", "Sunday"] }, // Weekend days
   };
 
+  // HTML escape function to prevent XSS (cached for performance)
+  const escapeHtmlDiv = document.createElement('div');
+  function escapeHtml(unsafe) {
+    escapeHtmlDiv.textContent = unsafe;
+    return escapeHtmlDiv.innerHTML;
+  }
+
   // Initialize filters from active elements
   function initializeFilters() {
     // Initialize day filter
@@ -820,13 +827,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  // HTML escape function to prevent XSS (cached for performance)
-  const escapeHtmlDiv = document.createElement('div');
-  function escapeHtml(unsafe) {
-    escapeHtmlDiv.textContent = unsafe;
-    return escapeHtmlDiv.innerHTML;
-  }
-
   // Handle social sharing
   function handleShare(event) {
     const button = event.currentTarget;
@@ -862,7 +862,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       } else {
         // Fallback for browsers without clipboard API
-        showMessage("Clipboard not supported. Please copy this link: " + shareUrl, "info");
+        showMessage("Clipboard not supported. Please copy the URL from your address bar to share this activity.", "info");
       }
     }
   }
