@@ -554,16 +554,16 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="share-buttons">
         <span class="share-label">Share:</span>
-        <button class="share-button share-twitter" data-activity="${name}" data-description="${details.description}" title="Share on Twitter">
+        <button class="share-button share-twitter" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" title="Share on Twitter">
           <span>𝕏</span>
         </button>
-        <button class="share-button share-facebook" data-activity="${name}" data-description="${details.description}" title="Share on Facebook">
+        <button class="share-button share-facebook" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" title="Share on Facebook">
           <span>f</span>
         </button>
-        <button class="share-button share-email" data-activity="${name}" data-description="${details.description}" title="Share via Email">
+        <button class="share-button share-email" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" title="Share via Email">
           <span>✉</span>
         </button>
-        <button class="share-button share-copy" data-activity="${name}" data-description="${details.description}" title="Copy Link">
+        <button class="share-button share-copy" data-activity="${escapeHtml(name)}" data-description="${escapeHtml(details.description)}" title="Copy Link">
           <span>🔗</span>
         </button>
       </div>
@@ -820,6 +820,13 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  // HTML escape function to prevent XSS
+  function escapeHtml(unsafe) {
+    const div = document.createElement('div');
+    div.textContent = unsafe;
+    return div.innerHTML;
+  }
+
   // Handle social sharing
   function handleShare(event) {
     const button = event.currentTarget;
@@ -850,7 +857,7 @@ document.addEventListener("DOMContentLoaded", () => {
       navigator.clipboard.writeText(shareUrl).then(() => {
         showMessage("Link copied to clipboard!", "success");
       }).catch(() => {
-        showMessage("Failed to copy link", "error");
+        showMessage("Unable to copy link. Please try selecting and copying the URL manually.", "error");
       });
     }
   }
