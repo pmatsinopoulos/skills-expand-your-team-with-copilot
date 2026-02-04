@@ -820,11 +820,11 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  // HTML escape function to prevent XSS
+  // HTML escape function to prevent XSS (cached for performance)
+  const escapeHtmlDiv = document.createElement('div');
   function escapeHtml(unsafe) {
-    const div = document.createElement('div');
-    div.textContent = unsafe;
-    return div.innerHTML;
+    escapeHtmlDiv.textContent = unsafe;
+    return escapeHtmlDiv.innerHTML;
   }
 
   // Handle social sharing
@@ -854,11 +854,16 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
     } else if (button.classList.contains("share-copy")) {
       // Copy link to clipboard
-      navigator.clipboard.writeText(shareUrl).then(() => {
-        showMessage("Link copied to clipboard!", "success");
-      }).catch(() => {
-        showMessage("Unable to copy link. Please try selecting and copying the URL manually.", "error");
-      });
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          showMessage("Link copied to clipboard!", "success");
+        }).catch(() => {
+          showMessage("Unable to copy link. Please try selecting and copying the URL manually.", "error");
+        });
+      } else {
+        // Fallback for browsers without clipboard API
+        showMessage("Clipboard not supported. Please copy this link: " + shareUrl, "info");
+      }
     }
   }
 
